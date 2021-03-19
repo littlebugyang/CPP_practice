@@ -1,5 +1,6 @@
 #include <iostream>
-#include "mytime2.h"
+#include "11.7_mytime2.h"
+
 int main()
 {
     using std::cout;
