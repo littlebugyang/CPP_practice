@@ -16,40 +16,83 @@ public:
      */
     ListNode *sortInList(ListNode *head)
     {
-        ListNode sortedS(0);
-        ListNode *sorted = &sortedS; // 有序链表哨兵
-        sorted->next = head;
-        ListNode *lastSorted = sorted; // 有序部分移动
+        if (head == nullptr || head->next == nullptr)
+            return head;
 
-        while (lastSorted->next != nullptr)
+        ListNode sentinelO(0);
+        ListNode *slow, *fast, *sentinel;
+        slow = fast = sentinel = &sentinelO;
+        sentinel->next = head;
+        bool moveSlow = false;
+
+        while (fast->next != nullptr)
         {
-            int minVal = lastSorted->next->val;
-            ListNode *current = lastSorted->next;
-            ListNode *minNode = current;
-            while (current != nullptr)
+            fast = fast->next;
+            if (moveSlow)
             {
-                if (current->val < minVal)
-                {
-                    minVal = current->val;
-                    minNode = current;
-                }
-                current = current->next;
+                slow = slow->next;
             }
-            minNode->val = lastSorted->next->val;
-            lastSorted->next->val = minVal;
-            lastSorted = lastSorted->next;
+            moveSlow = !moveSlow;
         }
 
-        return head;
+        ListNode *backSorted = sortInList(slow->next);
+        slow->next = nullptr;
+        ListNode *frontSorted = sortInList(head);
+        return mergeTwoLists(frontSorted, backSorted);
+    }
+
+    ListNode *mergeTwoLists(ListNode *l1, ListNode *l2)
+    {
+        ListNode sentinelO = ListNode(0);
+        ListNode *sentinel, *current;
+        sentinel = current = &sentinelO;
+
+        while (l1 != nullptr && l2 != nullptr)
+        {
+            if (l1->val < l2->val)
+            {
+                current->next = l1;
+                l1 = l1->next;
+            }
+            else
+            {
+                current->next = l2;
+                l2 = l2->next;
+            }
+            current = current->next;
+            current->next = nullptr;
+        }
+
+        if (l1 == nullptr)
+        {
+            current->next = l2;
+        }
+        else // l2 为 nullptr
+        {
+            current->next = l1;
+        }
+        return sentinel->next;
     }
 };
 
 int main()
 {
-    ListNode one = ListNode(9);
-    ListNode two = ListNode(6);
-    ListNode three = ListNode(3);
+    ListNode one = ListNode(1);
+    ListNode two = ListNode(3);
+    ListNode three = ListNode(2);
+    ListNode four = ListNode(4);
+    ListNode five = ListNode(5);
+    ListNode six = ListNode(6);
+    ListNode seven = ListNode(7);
+    ListNode eight = ListNode(8);
     Solution solution;
+    one.next = &two;
+    two.next = &three;
+    three.next = &four;
+    four.next = &five;
+    // five.next = &six;
+    // six.next = &seven;
+
     ListNode *result = solution.sortInList(&one);
     return 0;
 }
