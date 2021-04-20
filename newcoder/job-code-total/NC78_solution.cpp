@@ -12,18 +12,15 @@ class Solution
 public:
     ListNode *ReverseList(ListNode *pHead)
     {
-        ListNode *current = new ListNode(0);
-        ListNode *prev = new ListNode(0);
+        ListNode *current = pHead;
+        ListNode *prev = nullptr;
         while (pHead != nullptr)
         {
-            prev->next = current->next;
-            current->next = pHead;
             pHead = pHead->next;
-            current->next->next = prev->next;
+            current->next = prev;
+            prev = current;
+            current = pHead;
         }
-        ListNode * ret = current->next;
-        delete prev;
-        delete current;
-        return ret;
+        return prev;
     }
 };
