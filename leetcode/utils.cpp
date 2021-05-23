@@ -22,3 +22,24 @@ TreeNode *constructTree(const vector<int> &nums)
     }
     return root;
 }
+
+struct ListNode
+{
+    int val;
+    ListNode *next;
+    ListNode() : val(0), next(nullptr) {}
+    ListNode(int x) : val(x), next(nullptr) {}
+    ListNode(int x, ListNode *next) : val(x), next(next) {}
+};
+
+ListNode *constructList(const vector<int> &nums)
+{
+    ListNode head = ListNode(0);
+    ListNode *curr = &head;
+    for (int i = 0; i < nums.size(); ++i)
+    {
+        curr->next = new ListNode(nums[i]);
+        curr = curr->next;
+    }
+    return head.next;
+}
