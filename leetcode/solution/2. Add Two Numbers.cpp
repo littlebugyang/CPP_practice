@@ -12,59 +12,36 @@ class Solution
 public:
     ListNode *addTwoNumbers(ListNode *l1, ListNode *l2)
     {
+        ListNode sen1(0), *curr1 = &sen1; // 哨兵真香
+        curr1->next = l1;
+        ListNode sen2(0), *curr2 = &sen2;
+        curr2->next = l2;
         bool carry = false;
-        ListNode *curr1 = l1, *curr2 = l2;
-        while (curr1 && curr2)
+        while (curr1->next && curr2->next)
         {
-            int sum = curr1->val + curr2->val + int(carry);
+            int sum = curr1->next->val + curr2->next->val + int(carry);
             carry = sum > 9;
-            curr1->val = curr2->val = sum % 10;
-            curr1 = curr1->next;
-            curr2 = curr2->next;
+            curr1->next->val = curr2->next->val = (sum % 10);
+            curr1 = curr1->next, curr2 = curr2->next;
         }
 
-        if (curr1)
+        ListNode *longer = curr1->next ? curr1 : curr2;
+        solveRest(longer, carry);
+        return curr1->next ? l1 : l2;
+    }
+
+    void solveRest(ListNode *head, bool carry)
+    {
+        // 此处的 head 是之前某链表上最后一个更新 val 的节点
+        while (head->next)
         {
-            ListNode *prev = curr1;
-            while (curr1)
-            {
-                int sum = curr1->val + int(carry);
-                carry = sum > 9;
-                curr1->val = sum % 10;
-                prev = curr1;
-                curr1 = curr1->next;
-            }
-            if (carry)
-                prev->next = new ListNode(1);
-            return l1;
+            int sum = head->next->val + int(carry);
+            carry = sum > 9;
+            head->next->val = (sum % 10);
+            head = head->next;
         }
 
-        else if (curr2)
-        {
-            ListNode *prev = curr2;
-            while (curr2)
-            {
-                int sum = curr2->val + int(carry);
-                carry = sum > 9;
-                curr2->val = sum % 10;
-                prev = curr2;
-                curr2 = curr2->next;
-            }
-            if (carry)
-                prev->next = new ListNode(1);
-            return l2;
-        }
-
-        else
-        {
-            if (carry)
-            {
-                curr1 = l1;
-                while (curr1->next)
-                    curr1 = curr1->next;
-                curr1->next = new ListNode(1);
-            }
-            return l1;
-        }
+        if (carry)
+            head->next = new ListNode(1), head = head->next;
     }
 };

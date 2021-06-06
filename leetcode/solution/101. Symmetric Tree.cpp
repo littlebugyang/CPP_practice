@@ -1,4 +1,6 @@
 #include <vector>
+#include <queue>
+using std::queue;
 using std::vector;
 
 struct TreeNode
@@ -14,7 +16,7 @@ struct TreeNode
 class Solution
 {
 public:
-    bool isSymmetric(TreeNode *root)
+    bool isSymmetric2(TreeNode *root)
     {
         if (root == nullptr || (root->left == nullptr && root->right == nullptr)) // 根节点为叶子节点或空节点
             return true;
@@ -97,5 +99,44 @@ public:
                 break;
             ++i;
         }
+    }
+
+    bool isSymmetricIterative(TreeNode *root)
+    {
+        queue<TreeNode *> q;
+        q.push(root), q.push(root);
+        while (!q.empty())
+        {
+            TreeNode *x = q.front();
+            q.pop();
+            TreeNode *y = q.front();
+            q.pop();
+
+            if (!x && !y) // x 和 y 都同时不存在，则可以跳过后面的过程
+                continue;
+
+            if (!(x && y && x->val == y->val)) // 如果 x 和 y 不能保持同时存在且值相同的话
+                return false;                  // 那就不可能对称
+
+            q.push(x->left);
+            q.push(y->right);
+            q.push(x->right);
+            q.push(y->left);
+        }
+        return true;
+    }
+
+    bool isSymmetricRecursive(TreeNode *left, TreeNode *right)
+    {
+        if (!left && !right) // left、right 同时为空
+            return true;
+        if (!left || !right || left->val != right->val)
+            return false;
+        return isSymmetricRecursive(left->right, right->left) && isSymmetricRecursive(left->left, right->right);
+    }
+
+    bool isSymmetric(TreeNode *root)
+    {
+        return isSymmetricRecursive(root, root);
     }
 };
